@@ -1,0 +1,22 @@
+{
+    "name": "mr-sem-s/app-daf",
+    "autoload": {
+        "psr-4": {
+            "MrSemS\\AppDaf\\": "src/",
+            "App\\Entities\\": "src/Entities",
+            "App\\Services\\": "src/Services",
+            "App\\Repositories\\": "src/Repositories",
+            "App\\Core\\Abstract\\": "App/core/abstract",
+            "App\\Core\\": "App/core",
+            "App\\Config\\": "App/Config",
+            "App\\Controllers\\": "src/Controllers"
+        }
+    },
+    "authors": [
+        {
+            "name": "pape sembene",
+            "email": "sembenpape4@gmail.com"
+        }
+    ],
+    "require": {}
+}
