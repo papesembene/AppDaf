@@ -38,6 +38,14 @@ class CitoyensRepository extends AbstractRepository {
             return $citoyens ?: null;
 
     }
+   
+    public function isUnique(string $column, string $value): bool
+    {
+        $sql = "SELECT COUNT(*) FROM citoyens WHERE $column = :value";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':value' => $value]);
+        return $stmt->fetchColumn() == 0;
+    }
 
 
 }

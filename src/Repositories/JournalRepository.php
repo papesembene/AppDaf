@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 use App\Core\abstract;
+use App\Entities;
 
 class JournalRepository extends AbstractRepository {
 
@@ -19,24 +20,27 @@ class JournalRepository extends AbstractRepository {
         parent::construct();
     }
 
-     public function insertLog( string $nci_recherche, string $localisation, string $ip): ?JournalRepository
+    
+
+    public function insertJournal(JournalEntity $journal): bool
     {
-            $query = "Insert INTO $this->table (nci_recherche, ip, localisation,  statut, date_recherche) 
-                     VALUES  (:nci_recherche, :ip, :localisation, :statut, :date_recherche)";
-
-            $stmt = $this->pdo->prepare($query);
-            $stmt->execute([
-
-                'nci_recherche' => $nci_recherche,
-                'ip' => $ip,
-                'localisation' => $localisation,
-                "statut"=>'en Cours',
-                ':date'=> date("Y-m-d H:i:s"),
-            ]
-            );
-               
+        try{
+        $query = "Insert INTO $this->table (nci_recherche, ip, localisation,  statut, date_recherche) 
+                     VALUES  (:nci_recherche, :ip, :localisation, :statut, :date_recherche)";    
+        $statement = $this->pdo->prepare($query);
+        return $statement->execute([
+            'nci_recherche' => $journal->getNci_recherche(),
+            'date' => $journal->getDate_recherche()->format('Y-m-d H:i:s'),
+            'ip' => $journal->getIp(),
+            'statut' => $journal->getStatut()->value,
+           
+        ]);
+        } catch (\PDOException $e) {
+            throw new \Exception("Erreur lors de l'insertion du journal: " . $e->getMessage());
+        }
 
     }
+        
 
 
 }
