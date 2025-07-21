@@ -22,19 +22,21 @@ class JournalRepository extends AbstractRepository {
 
     
 
-    public function insertJournal(JournalEntity $journal): bool
+    public function insertJournal(JournalEntity $journal): int
     {
         try{
         $query = "Insert INTO $this->table (nci_recherche, ip, localisation,  statut, date_recherche) 
                      VALUES  (:nci_recherche, :ip, :localisation, :statut, :date_recherche)";    
         $statement = $this->pdo->prepare($query);
-        return $statement->execute([
+         $statement->execute([
             'nci_recherche' => $journal->getNci_recherche(),
             'date' => $journal->getDate_recherche()->format('Y-m-d H:i:s'),
             'ip' => $journal->getIp(),
             'statut' => $journal->getStatut()->value,
            
         ]);
+        return $this->pdo->lastInsertId();
+        
         } catch (\PDOException $e) {
             throw new \Exception("Erreur lors de l'insertion du journal: " . $e->getMessage());
         }
