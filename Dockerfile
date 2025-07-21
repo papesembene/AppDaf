@@ -23,15 +23,18 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Configure Nginx
 COPY .docker/nginx/default.conf /etc/nginx/sites-available/default
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+RUN rm -f /etc/nginx/sites-enabled/default.bak
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
 
-# Expose port 80 for Render
-EXPOSE 80
-
-# Start script
-COPY start.sh /start.sh
+# Create start script
+RUN echo '#!/bin/bash\nphp-fpm -D\nnginx -g "daemon off;"' > /start.sh
 RUN chmod +x /start.sh
 
+# Expose port 80
+EXPOSE 80
+
+# Start both services
 CMD ["/start.sh"]
