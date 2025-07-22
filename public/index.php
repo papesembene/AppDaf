@@ -8,14 +8,11 @@ use App\Migrations\Migration;
 use App\Seeders\Seeder;
 
 
-// Charger les variables d'environnement
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
-// Connexion à la BDD
 $db = DataBase::getInstance()->getConnection();
 
-// Exécuter la migration
 $migration = new Migration($db);
 $migration->run();
 
