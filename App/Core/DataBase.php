@@ -29,12 +29,12 @@ class DataBase
     }
 
     private function loadEnvironment(): void
-{
-    if (!isset($_ENV['DB_HOST'])) {
-        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../'); 
-        $dotenv->load();
+    {
+        if (!isset($_ENV['DB_HOST'])) {
+            $dotenv = Dotenv::createImmutable(__DIR__ . '/../../'); 
+            $dotenv->load();
+        }
     }
-}
 
     private function initializeDatabaseParams(): void
     {
@@ -44,13 +44,17 @@ class DataBase
             'user' => $_ENV['DB_USER'],
             'password' => $_ENV['DB_PASS'],
             'driver' => $_ENV['DB_DRIVER'],
-            'dbname' => $_ENV['DB_NAME'] ?? 'postgres'
+            'dbname' => $_ENV['DB_NAME'] ?? null 
         ];
     }
 
     public function getConnection(): PDO
     {
         if ($this->pdo === null) {
+            // Vérifier que le nom de la base de données est défini
+            if (empty($this->config['dbname'])) {
+                throw new \Exception("Nom de base de données non défini. Exécutez d'abord la migration.");
+            }
             $this->pdo = $this->createConnection($this->config['dbname']);
         }
         return $this->pdo;

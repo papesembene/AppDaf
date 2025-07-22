@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
-use App\Core\abstract;
+use App\Core\Abstract\AbstractRepository;
+use App\Entities\CitoyensEntity;
 
 class CitoyensRepository extends AbstractRepository {
 
@@ -15,10 +16,10 @@ class CitoyensRepository extends AbstractRepository {
     
     private function __construct()
     {
-        parent::construct();
+        parent::__construct();
     }
 
-     public function findByNum( string $numCni): ?CitoyensRepository
+     public function findByNum( string $numCni): ?CitoyensEntity
     {
             $query = "SELECT * 
             FROM citoyens c
@@ -27,8 +28,8 @@ class CitoyensRepository extends AbstractRepository {
             $stmt = $this->pdo->prepare($query);
             $stmt->bindParam(':nci' , $numCni);
             $stmt->execute();
-            $array = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        
+            $array = $stmt->fetch(\PDO::FETCH_ASSOC);
+           
             if (empty($array)) 
             {
                 return null;

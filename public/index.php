@@ -2,7 +2,7 @@
 <?php
 
 require_once __DIR__ . '/../vendor/autoload.php';
-use App\Core\Router;
+use App\Router\Router;
 
 
 header('Access-Control-Allow-Origin: *');
@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 $routes = require __DIR__ . '/../routes/route.api.php';
+
 
 try {
     Router::resolve($routes);

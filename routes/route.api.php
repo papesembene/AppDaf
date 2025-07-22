@@ -3,16 +3,19 @@
 use App\Controllers\CitoyensController;
 
 return [
-    'GET /' => [
+    '/' => [
         'controller' => CitoyensController::class,
-        'action' => 'index', 
+        'method' => 'index', 
+        'methods' => ['GET'],
     ],
-    'GET /citoyens' => [
+    '/citoyens' => [
         'controller' => CitoyensController::class,
-        'action' => 'index',
+        'method' => 'index',
+        'methods' => ['GET'],
     ],
-    'GET /citoyens/nci/{nci}' => [  
+    'citoyens/{nci}' => [  
         'controller' => CitoyensController::class,
-        'action' => 'findByNci',
+        'method' => 'findByNci',
+        'methods' => ['GET'],
     ],
 ];

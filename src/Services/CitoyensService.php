@@ -1,5 +1,6 @@
 <?php
 namespace App\Services;
+use App\Entities\CitoyensEntity;
 use App\Repositories\CitoyensRepository;
 class CitoyensService
  {
@@ -22,7 +23,7 @@ class CitoyensService
         $this->citoyensRepository=CitoyensRepository::getInstance();
     }
 
-    public function getCitoyenByNumCni(string $numcni): ?CitoyensRepository
+    public function getCitoyenByNumCni(string $numcni): ?CitoyensEntity
     {
         return $this->citoyensRepository->findByNum($numcni);
     }

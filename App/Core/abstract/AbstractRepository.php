@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Core\abstract;
+namespace App\Core\Abstract;
 
-use App\Core\Database;
+use App\Core\DataBase;
 use PDO;
 abstract class AbstractRepository{
 
@@ -10,7 +10,7 @@ abstract class AbstractRepository{
 
    public function __construct(){
 
-        $this->pdo = Database::getInstance()->getConnection();
+        $this->pdo = DataBase::getInstance()->getConnection();
     }
 }
 

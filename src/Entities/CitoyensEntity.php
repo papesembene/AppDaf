@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entities;
+use App\Core\Abstract\AbstractEntity;
 
 class CitoyensEntity extends AbstractEntity {
 
@@ -14,7 +15,7 @@ class CitoyensEntity extends AbstractEntity {
     private string $url_verso;
     
 
-    public function __construct($id = 0, $nci='',  $nom = '', $prenom = '', $date_naissance = '', $lieu_naissance = '', $url_recto = '', $url_verso = ''){
+    public function  __construct($id = 0, $nci='',  $nom = '', $prenom = '', $date_naissance = '', $lieu_naissance = '', $url_recto = '', $url_verso = ''){
 
         $this->id = $id;
         $this->nci = $nci;
@@ -126,7 +127,7 @@ class CitoyensEntity extends AbstractEntity {
     public function setUrl_verso($url_verso){$this->url_verso = $url_verso;return $this;}
 
     public static function toObject(array $data):static{
-        return new self(
+        return new static(
             $data['id'],
             $data['nci'],
             $data['nom'],
@@ -138,16 +139,17 @@ class CitoyensEntity extends AbstractEntity {
         );
     }
 
-     public function toArray(){
-        return [
-            'id' => $this->id,
-            'nci' => $this->nci,
-            'nom' => $this-> nom,
-            'prenom' => $this -> prenom,
-            'date_naissance' => $this -> date_naissance,
-            'lieu_naissance' => $this -> lieu_naissance,
-            'url_recto' => $this -> url_recto,
-            'url_verso' => $this -> url_verso,
+     public function toArray(object $data): array{
+       
+         return [
+            'id' => $data->getId(),
+            'nci' => $data->getNci(),
+            'nom' => $data->getNom(),
+            'prenom' => $data->getPrenom(),
+            'date_naissance' => $data->getDate_naissance(),
+            'lieu_naissance' => $data->getLieu_naissance(),
+            'url_recto' => $data->getUrl_recto(),
+            'url_verso' => $data->getUrl_verso()
         ];
     }
 
