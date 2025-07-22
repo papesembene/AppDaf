@@ -1,3 +1,4 @@
+
 <?php
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -27,3 +28,5 @@ try {
         'timestamp' => date('Y-m-d H:i:s')
     ], JSON_UNESCAPED_UNICODE);
 }
+
+

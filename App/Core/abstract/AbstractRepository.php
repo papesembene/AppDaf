@@ -10,7 +10,7 @@ abstract class AbstractRepository{
 
    public function __construct(){
 
-        $this->pdo = Database::getInstance()->connection();
+        $this->pdo = Database::getInstance()->getConnection();
     }
 }
 

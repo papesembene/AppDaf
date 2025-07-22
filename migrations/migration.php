@@ -21,6 +21,7 @@ class Migration
 
     public function run(): void
     {
+        
         echo "--- Lancement de la migration AppDAF ---\n\n";
         
         $this->handleDatabaseCreation();
