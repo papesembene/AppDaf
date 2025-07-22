@@ -6,11 +6,11 @@
             "App\\Entities\\": "src/Entities",
             "App\\Services\\": "src/Services",
             "App\\Repositories\\": "src/Repositories",
-            "App\\Core\\Abstract\\": "App/Core/abstract",
-            "App\\Core\\": "App/Core",
+            "App\\Core\\Abstract\\": "App/core/abstract",
+            "App\\Core\\": "App/core",
             "App\\Config\\": "App/Config",
             "App\\Controllers\\": "src/Controllers",
-            "App\\Core\\Middlewares\\": "App/Core/middlewares",
+            "App\\Core\\Middlewares\\": "App/core/middlewares",
             "App\\Src\\Enums\\": "src/enums"
         }
     },
