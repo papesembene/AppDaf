@@ -30,8 +30,19 @@ class DataBase
 
     private function loadEnvironment(): void
     {
-           if (!isset($_ENV['DB_HOST']) && getenv('DB_HOST') === false) {
-            
+        // Si les variables d'environnement sont déjà présentes, ne charge pas .env
+        if (
+            getenv('DB_HOST') !== false ||
+            getenv('DATABASE_URL') !== false ||
+            isset($_ENV['DB_HOST']) ||
+            isset($_ENV['DATABASE_URL'])
+        ) {
+            // En production (Render), les variables sont déjà injectées
+            return;
+        }
+
+        // En local, charge le fichier .env
+        if (file_exists(__DIR__ . '/../../.env')) {
             $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
             $dotenv->load();
         }
