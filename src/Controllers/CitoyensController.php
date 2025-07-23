@@ -8,33 +8,7 @@ class CitoyensController extends AbstractController
 {
     private CitoyensService $citoyensService;
     private CitoyensEntity $citoyens;
-    // Simulation d'une base de données de citoyens
-    // private $citoyens = [
-    //     '1234567890123' => [
-    //         'nci' => '1234567890123',
-    //         'nom' => 'Diallo',
-    //         'prenom' => 'Amadou',
-    //         'date' => '1990-05-15',
-    //         'lieu' => 'Dakar',
-    //         'carte_identite_url' => 'https://cloud-storage.example.com/cartes/1234567890123.jpg'
-    //     ],
-    //     '9876543210987' => [
-    //         'nci' => '9876543210987',
-    //         'nom' => 'Ndiaye',
-    //         'prenom' => 'Fatou',
-    //         'date' => '1985-12-03',
-    //         'lieu' => 'Saint-Louis',
-    //         'carte_identite_url' => 'https://cloud-storage.example.com/cartes/9876543210987.jpg'
-    //     ],
-    //     '5555666677778' => [
-    //         'nci' => '5555666677778',
-    //         'nom' => 'Sow',
-    //         'prenom' => 'Ibrahima',
-    //         'date' => '1992-08-20',
-    //         'lieu' => 'Thiès',
-    //         'carte_identite_url' => 'https://cloud-storage.example.com/cartes/5555666677778.jpg'
-    //     ]
-    // ];
+  
     public function __construct()
     {
        
@@ -46,14 +20,13 @@ class CitoyensController extends AbstractController
     public function index() {
         $this->logRequest('GET', '/', 'success');
         
-        $data= $this->renderJson([
+        return $this->renderJson([
             'data' => array_values($this->citoyens),
             'statut' => 'success',
             'code' => 200,
             'message' => 'Liste des citoyens récupérée avec succès'
         ]);
-        var_dump($data);
-        die;
+       
     }
 
     public function findByNci($params) {  

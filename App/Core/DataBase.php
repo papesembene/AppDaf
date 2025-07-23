@@ -30,21 +30,21 @@ class DataBase
 
     private function loadEnvironment(): void
     {
-        
         $databaseUrl = getenv('DATABASE_URL') ?: ($_ENV['DATABASE_URL'] ?? null);
         if ($databaseUrl) {
             $parts = parse_url($databaseUrl);
-            
+
+            // Sécurise chaque clé
             putenv('DB_DRIVER=pgsql');
-            putenv('DB_HOST=' . $parts['host']);
-            putenv('DB_PORT=' . $parts['port']);
-            putenv('DB_USER=' . $parts['user']);
-            putenv('DB_PASS=' . $parts['pass']);
-            putenv('DB_NAME=' . ltrim($parts['path'], '/'));
+            putenv('DB_HOST=' . ($parts['host'] ?? ''));
+            putenv('DB_PORT=' . ($parts['port'] ?? '5432'));
+            putenv('DB_USER=' . ($parts['user'] ?? ''));
+            putenv('DB_PASS=' . ($parts['pass'] ?? ''));
+           
+            putenv('DB_NAME=' . (isset($parts['path']) ? ltrim($parts['path'], '/') : ''));
             return;
         }
 
-        
         if (file_exists(__DIR__ . '/../../.env')) {
             $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
             $dotenv->load();
