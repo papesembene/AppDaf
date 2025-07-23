@@ -30,18 +30,21 @@ class DataBase
 
     private function loadEnvironment(): void
     {
-        // Si les variables d'environnement sont déjà présentes, ne charge pas .env
-        if (
-            getenv('DB_HOST') !== false ||
-            getenv('DATABASE_URL') !== false ||
-            isset($_ENV['DB_HOST']) ||
-            isset($_ENV['DATABASE_URL'])
-        ) {
-            // En production (Render), les variables sont déjà injectées
+        
+        $databaseUrl = getenv('DATABASE_URL') ?: ($_ENV['DATABASE_URL'] ?? null);
+        if ($databaseUrl) {
+            $parts = parse_url($databaseUrl);
+            
+            putenv('DB_DRIVER=pgsql');
+            putenv('DB_HOST=' . $parts['host']);
+            putenv('DB_PORT=' . $parts['port']);
+            putenv('DB_USER=' . $parts['user']);
+            putenv('DB_PASS=' . $parts['pass']);
+            putenv('DB_NAME=' . ltrim($parts['path'], '/'));
             return;
         }
 
-        // En local, charge le fichier .env
+        
         if (file_exists(__DIR__ . '/../../.env')) {
             $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
             $dotenv->load();
