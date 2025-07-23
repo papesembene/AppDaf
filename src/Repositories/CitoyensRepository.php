@@ -3,7 +3,7 @@ namespace App\Repositories;
 use App\Core\Abstract\AbstractRepository;
 use App\Entities\CitoyensEntity;
 
-class CitoyensRepository extends AbstractRepository {
+class CitoyensRepository extends AbstractRepository implements ICitoyensRepository{
 
     private static ?CitoyensRepository $instance = null ;
     public static function getInstance(): CitoyensRepository
@@ -19,7 +19,7 @@ class CitoyensRepository extends AbstractRepository {
         parent::__construct();
     }
 
-     public function findByNum( string $numCni): ?CitoyensEntity
+     public function selectBynum( string $numCni): ?CitoyensEntity
     {
             $query = "SELECT * 
             FROM citoyens c

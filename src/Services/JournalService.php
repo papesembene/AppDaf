@@ -2,7 +2,8 @@
 
 namespace APP\Services;
  use App\Repositories\JournalRepository;
-class JournalService 
+
+class JournalService implements IjournalInterface
 {
     private static ?JournalService $journalService = null;
 
@@ -25,7 +26,7 @@ class JournalService
     }
     public function create(JournalEntity $journalEntity )
     {
-        return $this->JournalRepository->insertJournal($journalEntity);   
+        return $this->JournalRepository->insert($journalEntity);   
     }
 }
 

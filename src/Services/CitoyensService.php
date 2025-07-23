@@ -2,7 +2,7 @@
 namespace App\Services;
 use App\Entities\CitoyensEntity;
 use App\Repositories\CitoyensRepository;
-class CitoyensService
+class CitoyensService implements ICitoyensService
  {
     private static ?CitoyensService $citoyenService = null;
 
@@ -25,7 +25,7 @@ class CitoyensService
 
     public function getCitoyenByNumCni(string $numcni): ?CitoyensEntity
     {
-        return $this->citoyensRepository->findByNum($numcni);
+        return $this->citoyensRepository->selectBynum($numcni);
     }
 
 

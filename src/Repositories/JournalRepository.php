@@ -3,7 +3,7 @@ namespace App\Repositories;
 use App\Core\abstract;
 use App\Entities;
 
-class JournalRepository extends AbstractRepository {
+class JournalRepository extends AbstractRepository implements IJournalInterface{
 
     private string $table='journal';
     private static ?JournalRepository $instance = null ;
@@ -22,7 +22,7 @@ class JournalRepository extends AbstractRepository {
 
     
 
-    public function insertJournal(JournalEntity $journal): int
+    public function insert(JournalEntity $journal): int
     {
         try{
         $query = "Insert INTO $this->table (nci_recherche, ip, localisation,  statut, date_recherche) 
