@@ -30,8 +30,9 @@ class DataBase
 
     private function loadEnvironment(): void
     {
-        if (!isset($_ENV['DB_HOST'])) {
-            $dotenv = Dotenv::createImmutable(__DIR__ . '/../../'); 
+           if (!isset($_ENV['DB_HOST']) && getenv('DB_HOST') === false) {
+            
+            $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
             $dotenv->load();
         }
     }
@@ -39,12 +40,12 @@ class DataBase
     private function initializeDatabaseParams(): void
     {
         $this->config = [
-            'host' => $_ENV['DB_HOST'],
-            'port' => $_ENV['DB_PORT'],
-            'user' => $_ENV['DB_USER'],
-            'password' => $_ENV['DB_PASS'],
-            'driver' => $_ENV['DB_DRIVER'],
-            'dbname' => $_ENV['DB_NAME'] ?? null 
+            'host' => getenv('DB_HOST') ?: $_ENV['DB_HOST'] ?? null,
+            'port' => getenv('DB_PORT') ?: $_ENV['DB_PORT'] ?? null,
+            'user' => getenv('DB_USER') ?: $_ENV['DB_USER'] ?? null,
+            'password' => getenv('DB_PASS') ?: $_ENV['DB_PASS'] ?? null,
+            'driver' => getenv('DB_DRIVER') ?: $_ENV['DB_DRIVER'] ?? 'pgsql',
+            'dbname' => getenv('DB_NAME') ?: $_ENV['DB_NAME'] ?? null
         ];
     }
 
