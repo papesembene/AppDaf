@@ -49,14 +49,13 @@ class CitoyensController extends AbstractController
         $this->logRequest('GET', "/citoyens/{$nci}", $statut);
 
         if (empty($arraycitoyens[$nci])) {
-            $data= $this->renderJson([
+            return $this->renderJson([
                 'data' => $arraycitoyens,
                 'statut' => 'success',
                 'code' => 200,
                 'message' => 'Le numéro de carte d\'identité a été retrouvé'
             ]);
-            var_dump($data);
-            die;
+         
         }
 
         return $this->renderJson([
