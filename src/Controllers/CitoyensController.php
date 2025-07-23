@@ -21,7 +21,7 @@ class CitoyensController extends AbstractController
         $this->logRequest('GET', '/', 'success');
         
         return $this->renderJson([
-            'data' => array_values($this->citoyens),
+            'data' => $this->citoyens->toArray($this->citoyens),
             'statut' => 'success',
             'code' => 200,
             'message' => 'Liste des citoyens récupérée avec succès'
