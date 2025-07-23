@@ -60,6 +60,7 @@ abstract class AbstractController
     {
         http_response_code($statusCode);
         header('Content-Type: application/json; charset=utf-8');
-        return json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        // return json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        echo(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
     }
 }

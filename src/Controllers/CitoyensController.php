@@ -32,10 +32,6 @@ class CitoyensController extends AbstractController
     public function findByNci($params) {  
         $nci = $params['nci'] ?? null;
 
-       $citoyens= $this->citoyensService->getCitoyenByNumCni($nci);
-       
-       $arraycitoyens = $this->citoyens->toArray($citoyens);
-      
         if (!$nci) {
             return $this->renderJson([
                 'data' => null,
@@ -45,17 +41,18 @@ class CitoyensController extends AbstractController
             ], 400);
         }
 
-        $statut = empty($arraycitoyens[$nci]) ? 'success' : 'error';
+        $citoyen = $this->citoyensService->getCitoyenByNumCni($nci);
+
+        $statut = $citoyen ? 'success' : 'error';
         $this->logRequest('GET', "/citoyens/{$nci}", $statut);
 
-        if (empty($arraycitoyens[$nci])) {
+        if ($citoyen) {
             return $this->renderJson([
-                'data' => $arraycitoyens,
+                'data' => $citoyen->toArray($citoyen),
                 'statut' => 'success',
                 'code' => 200,
                 'message' => 'Le numéro de carte d\'identité a été retrouvé'
             ]);
-         
         }
 
         return $this->renderJson([
