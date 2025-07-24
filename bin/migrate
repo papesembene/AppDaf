@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+
+<?php
+
+require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/../App/config/env.php";
+
+
+use App\Migrations\Migration;
+use App\Migrations\MysqlMigrationDriver;
+use App\Migrations\PgsqlMigrationDriver;
+$driver = null;
+if (DB_DRIVER === 'mysql')
+{
+
+$pdo= new \PDO( BASE_DSN_MYSQL, DB_USER_MYSQL,DB_PASS_MYSQL);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $driver = new MysqlMigrationDriver($pdo, DB_NAME);
+}
+
+elseif (DB_DRIVER === 'pgsql')
+{
+    $pdo= new PDO( BASE_DSN_POSTGRES, DB_USER_POSTGRES, DB_PASS_POSTGRES);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $driver = new PgsqlMigrationDriver($pdo, DB_NAME, DB_USER_POSTGRES, DB_PASS_POSTGRES);
+
+ 
+}
+else {
+    exit("Driver non supporté.\n");
+}
+
+$migration = new Migration($driver);
+$migration->run();

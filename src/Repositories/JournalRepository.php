@@ -6,14 +6,14 @@ use App\Entities;
 class JournalRepository extends AbstractRepository implements IJournalInterface{
 
     private string $table='journal';
-    private static ?JournalRepository $instance = null ;
-    public static function getInstance(): JournalRepository
-    {
-        if (is_null(self::$instance)) {
-            self::$instance = new JournalRepository();
-        }
-        return self::$instance;
-    }
+    // private static ?JournalRepository $instance = null ;
+    // public static function getInstance(): JournalRepository
+    // {
+    //     if (is_null(self::$instance)) {
+    //         self::$instance = new JournalRepository();
+    //     }
+    //     return self::$instance;
+    // }
     
     private function __construct()
     {

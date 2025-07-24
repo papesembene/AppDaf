@@ -9,6 +9,7 @@ interface ICitoyensRepository
      * @param string $nci Le numéro de carte d'identité nationale.
      * @return mixed Retourne l'entité citoyen ou null si non trouvé.
      */
+
     public function selectBynum(string $nci):? CitoyensEntity;
     
     /**
@@ -18,6 +19,8 @@ interface ICitoyensRepository
      * @param string $value La valeur à vérifier pour l'unicité.
      * @return bool Retourne true si la valeur est unique, false sinon.
      */
+
     public function isUnique(string $column, string $value): bool;
+    
     
 }

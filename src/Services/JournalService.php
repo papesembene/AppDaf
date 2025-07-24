@@ -2,28 +2,21 @@
 
 namespace APP\Services;
  use App\Repositories\JournalRepository;
+ use App\Core\Singleton;
+use App\Entities\JournalEntity;
 
-class JournalService implements IjournalInterface
+class JournalService extends Singleton implements IjournalInterface
 {
-    private static ?JournalService $journalService = null;
+    
 
-    private JournalRepository $JournalRepository;
-        public  static function getInstance()
+    private IJournalRepository $IJournalRepository;
+    
+    private function __construct(IJournalRepository $IJournalRepository)
     {
-        if(is_null(self::$journalService))
-         {
-            self::$instance= new JournalService(); 
-         }
-        
-        return self::$journalService;
-
+        $this->IJournalRepository = $IJournalRepository;
     }
-    private function __construct()
 
-    {
-        $this->JournalRepository=JournalRepository::getInstance();
-
-    }
+    
     public function create(JournalEntity $journalEntity )
     {
         return $this->JournalRepository->insert($journalEntity);   

@@ -1,0 +1,13 @@
+core:
+  - App\Core\DataBase
+  - App\Core\Session
+  - App\Core\Router
+  - App\Core\Validator
+
+services:
+  - App\Services\CitoyensService
+  - App\Services\JournalService
+
+repositories:
+  - App\Repositories\CitoyensRepository
+  - App\Repositories\JournalRepository

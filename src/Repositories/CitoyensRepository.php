@@ -3,18 +3,19 @@ namespace App\Repositories;
 use App\Core\Abstract\AbstractRepository;
 use App\Entities\CitoyensEntity;
 
-class CitoyensRepository extends AbstractRepository implements ICitoyensRepository{
+class CitoyensRepository extends AbstractRepository implements ICitoyensRepository
+{
 
-    private static ?CitoyensRepository $instance = null ;
-    public static function getInstance(): CitoyensRepository
-    {
-        if (is_null(self::$instance)) {
-            self::$instance = new CitoyensRepository();
-        }
-        return self::$instance;
-    }
+    // private static ?CitoyensRepository $instance = null ;
+    // public static function getInstance(): CitoyensRepository
+    // {
+    //     if (is_null(self::$instance)) {
+    //         self::$instance = new CitoyensRepository();
+    //     }
+    //     return self::$instance;
+    // }
     
-    private function __construct()
+    public function __construct()
     {
         parent::__construct();
     }

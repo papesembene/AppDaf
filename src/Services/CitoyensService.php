@@ -1,26 +1,17 @@
 <?php
 namespace App\Services;
 use App\Entities\CitoyensEntity;
-use App\Repositories\CitoyensRepository;
-class CitoyensService implements ICitoyensService
+use App\Repositories\ICitoyensRepository;
+use App\Core\Singleton;
+class CitoyensService extends Singleton implements ICitoyensService
  {
-    private static ?CitoyensService $citoyenService = null;
+    
 
-    private CitoyensRepository $citoyensRepository;
+    private ICitoyensRepository $IcitoyensRepository;
 
-     public  static function getInstance()
+    public function __construct(ICitoyensRepository $IcitoyensRepository)
     {
-        if(is_null(self:: $citoyenService))
-         {
-            self::$citoyenService=new CitoyensService(); 
-         }
-        
-        return self::$citoyenService;
-    }
-    private function __construct()
-
-    {
-        $this->citoyensRepository=CitoyensRepository::getInstance();
+        $this->IcitoyensRepository = $IcitoyensRepository;
     }
 
     public function getCitoyenByNumCni(string $numcni): ?CitoyensEntity

@@ -6,15 +6,15 @@ use App\Services\CitoyensService;
 use App\Entities\CitoyensEntity;
 class CitoyensController extends AbstractController
 {
-    private CitoyensService $citoyensService;
+    private ICitoyensService $IcitoyensService;
     private CitoyensEntity $citoyens;
   
-    public function __construct()
+    public function __construct(ICitoyensService $IcitoyensService)
     {
-       
-        $this->citoyensService = CitoyensService::getInstance();
-        $this->citoyens = new CitoyensEntity();
+      
+        $this->IcitoyensService = $IcitoyensService;
     }
+   
 
     
     public function index() {

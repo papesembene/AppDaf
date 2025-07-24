@@ -10,7 +10,8 @@ class Singleton
     public static function getInstance(): static
     {
         $calledClass = get_called_class();
-        if (!isset(self::$instances[$calledClass])) {
+        if (!isset(self::$instances[$calledClass])) 
+        {
             $reflection = new \ReflectionClass($calledClass);
             self::$instances[$calledClass] = $reflection->newInstanceWithoutConstructor();
            
@@ -26,3 +27,5 @@ class Singleton
         return self::$instances[$calledClass];
     }
 }
+
+

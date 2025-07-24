@@ -7,104 +7,127 @@ use Dotenv\Dotenv;
 use App\Src\Enums\SuccessEnum;
 use App\Src\Enums\ErrorEnum;
 
-class DataBase
+class DataBase 
 {
     private static ?DataBase $instance = null;
-    private ?PDO $pdo = null;
+    private static ?PDO $pdo = null;
     private ?PDO $pdoServer = null;
-    private array $config;
+    private static array $config=[];
 
-    public static function getInstance(): self
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
+    // public static function getInstance(): self
+    // {
+    //     if (self::$instance === null) {
+    //         self::$instance = new self();
+    //     }
+    //     return self::$instance;
+    // }
 
-    private function __construct()
-    {
-        $this->loadEnvironment();
-        $this->initializeDatabaseParams();
-    }
+    // private function __construct()
+    // {
+    //     $this->loadEnvironment();
+    //     $this->initializeDatabaseParams();
+    // }
 
-    private function loadEnvironment(): void
-    {
-        $databaseUrl = getenv('DATABASE_URL') ?: ($_ENV['DATABASE_URL'] ?? null);
-        if ($databaseUrl) {
-            $parts = parse_url($databaseUrl);
+    // private function loadEnvironment(): void
+    // {
+    //     $databaseUrl = getenv('DATABASE_URL') ?: ($_ENV['DATABASE_URL'] ?? null);
+    //     if ($databaseUrl) {
+    //         $parts = parse_url($databaseUrl);
 
-            // Sécurise chaque clé
-            putenv('DB_DRIVER=pgsql');
-            putenv('DB_HOST=' . ($parts['host'] ?? ''));
-            putenv('DB_PORT=' . ($parts['port'] ?? '5432'));
-            putenv('DB_USER=' . ($parts['user'] ?? ''));
-            putenv('DB_PASS=' . ($parts['pass'] ?? ''));
+    //         // Sécurise chaque clé
+    //         putenv('DB_DRIVER=pgsql');
+    //         putenv('DB_HOST=' . ($parts['host'] ?? ''));
+    //         putenv('DB_PORT=' . ($parts['port'] ?? '5432'));
+    //         putenv('DB_USER=' . ($parts['user'] ?? ''));
+    //         putenv('DB_PASS=' . ($parts['pass'] ?? ''));
            
-            putenv('DB_NAME=' . (isset($parts['path']) ? ltrim($parts['path'], '/') : ''));
-            return;
-        }
+    //         putenv('DB_NAME=' . (isset($parts['path']) ? ltrim($parts['path'], '/') : ''));
+    //         return;
+    //     }
 
-        if (file_exists(__DIR__ . '/../../.env')) {
-            $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
-            $dotenv->load();
-        }
-    }
+    //     if (file_exists(__DIR__ . '/../../.env')) {
+    //         $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
+    //         $dotenv->load();
+    //     }
+    // }
 
-    private function initializeDatabaseParams(): void
+    // private function initializeDatabaseParams(): void
+    // {
+    //     self::$config = [
+    //         'host' => getenv('DB_HOST') ?: $_ENV['DB_HOST'] ?? null,
+    //         'port' => getenv('DB_PORT') ?: $_ENV['DB_PORT'] ?? null,
+    //         'user' => getenv('DB_USER') ?: $_ENV['DB_USER'] ?? null,
+    //         'password' => getenv('DB_PASS') ?: $_ENV['DB_PASS'] ?? null,
+    //         'driver' => getenv('DB_DRIVER') ?: $_ENV['DB_DRIVER'] ?? 'pgsql',
+    //         'dbname' => getenv('DB_NAME') ?: $_ENV['DB_NAME'] ?? null
+    //     ];
+    // }
+
+    // public static function getConnection(): PDO
+    // {
+    //     if (self::$pdo === null) {
+    //         // Vérifier que le nom de la base de données est défini
+    //         if (empty(self::$config['dbname'])) {
+    //             throw new \Exception("Nom de base de données non défini. Exécutez d'abord la migration.");
+    //         }
+    //         self::$pdo = self::createConnection(self::$config['dbname']);
+    //     }
+    //     return self::$pdo;
+    // }
+
+    // public function getServerConnection(): PDO
+    // {
+    //     if ($this->pdoServer === null) {
+    //         $this->pdoServer = self::createConnection('postgres');
+    //     }
+    //     return $this->pdoServer;
+    // }
+
+    // public static function createConnection(string $dbname): PDO
+    // {
+    //     $dsn = sprintf('%s:host=%s;port=%s;dbname=%s',
+    //         $this->config['driver'],
+    //         $this->config['host'],
+    //         $this->config['port'],
+    //         $dbname
+    //     );
+
+    //     try {
+    //         $pdo = new PDO($dsn, $this->config['user'], $this->config['password']);
+    //         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    //         // echo SuccessEnum::SUCCESS_CONNECTION->value . " ($dbname)\n";
+    //         return $pdo;
+    //     } catch (PDOException $e) {
+    //         exit(ErrorEnum::ECHEC_CONNEXION->value . $e->getMessage() . "\n");
+    //     }
+    // }
+
+    // public function setDatabaseName(string $dbname): void
+    // {
+    //     $this->config['dbname'] = $dbname;
+    //     $this->pdo = null; 
+    // }
+
+      public static function getConnection(): PDO
     {
-        $this->config = [
-            'host' => getenv('DB_HOST') ?: $_ENV['DB_HOST'] ?? null,
-            'port' => getenv('DB_PORT') ?: $_ENV['DB_PORT'] ?? null,
-            'user' => getenv('DB_USER') ?: $_ENV['DB_USER'] ?? null,
-            'password' => getenv('DB_PASS') ?: $_ENV['DB_PASS'] ?? null,
-            'driver' => getenv('DB_DRIVER') ?: $_ENV['DB_DRIVER'] ?? 'pgsql',
-            'dbname' => getenv('DB_NAME') ?: $_ENV['DB_NAME'] ?? null
-        ];
-    }
+        if (self::$pdo === null) 
+        {
+            try {
+                $driver = $_ENV['DB_DRIVER'];
+                $host = $_ENV['DB_HOST'];
+                $port = $_ENV['DB_PORT'];
+                $dbname = $_ENV['DB_NAME'];
+                $user = $_ENV['DB_USER'];
+                $pass = $_ENV['DB_PASS'];
+                $dsn = "{$driver}:host={$host};port={$port};dbname={$dbname}";
+                self::$pdo = new PDO($dsn, $user, $pass);
+                self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    public function getConnection(): PDO
-    {
-        if ($this->pdo === null) {
-            // Vérifier que le nom de la base de données est défini
-            if (empty($this->config['dbname'])) {
-                throw new \Exception("Nom de base de données non défini. Exécutez d'abord la migration.");
+            } catch (PDOException $e) {
+                die("Erreur de connexion PDO : " . $e->getMessage());
             }
-            $this->pdo = $this->createConnection($this->config['dbname']);
         }
-        return $this->pdo;
+        return self::$pdo;
     }
-
-    public function getServerConnection(): PDO
-    {
-        if ($this->pdoServer === null) {
-            $this->pdoServer = $this->createConnection('postgres');
-        }
-        return $this->pdoServer;
-    }
-
-    private function createConnection(string $dbname): PDO
-    {
-        $dsn = sprintf('%s:host=%s;port=%s;dbname=%s',
-            $this->config['driver'],
-            $this->config['host'],
-            $this->config['port'],
-            $dbname
-        );
-
-        try {
-            $pdo = new PDO($dsn, $this->config['user'], $this->config['password']);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            // echo SuccessEnum::SUCCESS_CONNECTION->value . " ($dbname)\n";
-            return $pdo;
-        } catch (PDOException $e) {
-            exit(ErrorEnum::ECHEC_CONNEXION->value . $e->getMessage() . "\n");
-        }
-    }
-
-    public function setDatabaseName(string $dbname): void
-    {
-        $this->config['dbname'] = $dbname;
-        $this->pdo = null; 
-    }
+    
 }

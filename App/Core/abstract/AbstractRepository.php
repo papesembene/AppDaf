@@ -12,8 +12,8 @@ abstract class AbstractRepository extends Singleton
     protected PDO $pdo;
 
    public function __construct()
-   {
-        // $this->pdo = DataBase::getInstance()->getConnection();
+    {
+        parent::__construct();
         $this->pdo = App::getDependency('DataBase')->getConnection();
     }
 }
