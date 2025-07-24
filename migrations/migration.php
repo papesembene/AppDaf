@@ -1,63 +1,68 @@
 <?php
 namespace App\Migrations;
-
- require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use PDO;
 use App\Core\DataBase;
-use App\Src\Enums\ErrorEnum;
-use App\Src\Enums\TextEnum;
-use App\Src\Enums\SuccessEnum;
+use App\Translate\Fr\ErrorEnum;
+use App\Translate\Fr\SuccessEnum;
+use App\Translate\Fr\TextEnum;
 
 class Migration
 {
     private string $dbName;
     private DataBase $database;
+    private string $driver;
 
     public function __construct()
     {
         $this->database = DataBase::getInstance();
+        $this->dbName = $_ENV['DB_NAME'];
+        $this->driver = strtolower($_ENV['DB_DRIVER']);
     }
 
     public function run(): void
     {
-        
         echo "--- Lancement de la migration AppDAF ---\n\n";
-        
-        $this->handleDatabaseCreation();
+        $this->checkOrCreateDatabase();
         $this->migrateTables();
     }
 
-    private function handleDatabaseCreation(): void
-    {
-        $reponse = strtolower(trim(readline(TextEnum::QUESTION_BASE_EXISTANTE->value)));
-
-        if ($reponse === 'oui' || $reponse === 'o') {
-            $this->dbName = trim(readline(TextEnum::QUESTION_NOM_BASE->value));
-        } else {
-            $this->dbName = trim(readline(TextEnum::READLINE_NOM_NEW_BASE->value));
-            $this->createDatabase();
-        }
-
-        $this->database->setDatabaseName($this->dbName);
-    }
-
-    private function createDatabase(): void
+    private function checkOrCreateDatabase(): void
     {
         $pdo = $this->database->getServerConnection();
-        
         try {
-            $pdo->exec("CREATE DATABASE \"{$this->dbName}\"");
-            echo SuccessEnum::SUCCESS_CREATE_DATABASE->value . " '{$this->dbName}'.\n";
+            if ($this->driver === 'pgsql') {
+                $stmt = $pdo->query("SELECT 1 FROM pg_database WHERE datname = '{$this->dbName}'");
+                $exists = $stmt->fetch();
+            } else { // mysql
+                $stmt = $pdo->query("SHOW DATABASES LIKE '{$this->dbName}'");
+                $exists = $stmt->fetch();
+            }
+            if (!$exists) {
+                echo ErrorEnum::DATABASE_INEXISTANTE->value . "\n";
+                $reponse = readline(TextEnum::QUESTION_CREATION_BASE->value);
+                if (strtoupper(trim($reponse)) === 'O') {
+                    if ($this->driver === 'pgsql') {
+                        $pdo->exec("CREATE DATABASE \"{$this->dbName}\"");
+                    } else {
+                        $pdo->exec("CREATE DATABASE `{$this->dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                    }
+                    echo SuccessEnum::SUCCESS_CREATE_DATABASE->value . " '{$this->dbName}'.\n";
+                } else {
+                    echo TextEnum::ARRET_PROGRAMME->value . "\n";
+                    exit;
+                }
+            }
         } catch (\PDOException $e) {
             exit(ErrorEnum::ECHEC_CREATE_DATABASE->value . $e->getMessage() . "\n");
         }
+        $this->database->setDatabaseName($this->dbName);
     }
 
     private function migrateTables(): void
     {
         $pdo = $this->database->getConnection();
-        
         try {
             $this->createCitoyensTable($pdo);
             $this->createJournalTable($pdo);
@@ -69,35 +74,68 @@ class Migration
 
     private function createCitoyensTable(PDO $pdo): void
     {
-        $pdo->exec("
-            CREATE TABLE IF NOT EXISTS citoyens (
-                id SERIAL PRIMARY KEY,
-                nci VARCHAR(20) UNIQUE NOT NULL,
-                nom VARCHAR(100) NOT NULL,
-                prenom VARCHAR(100) NOT NULL,
-                date_naissance DATE NOT NULL,
-                lieu_naissance VARCHAR(255) NOT NULL,
-                url_recto TEXT NOT NULL,
-                url_verso TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        ");
+        if ($this->driver === 'pgsql') {
+            $sql = "
+                CREATE TABLE IF NOT EXISTS citoyens (
+                    id SERIAL PRIMARY KEY,
+                    nci VARCHAR(20) UNIQUE NOT NULL,
+                    nom VARCHAR(100) NOT NULL,
+                    prenom VARCHAR(100) NOT NULL,
+                    date_naissance DATE NOT NULL,
+                    lieu_naissance VARCHAR(255) NOT NULL,
+                    url_recto TEXT NOT NULL,
+                    url_verso TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            ";
+        } else { // mysql
+            $sql = "
+                CREATE TABLE IF NOT EXISTS citoyens (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    nci VARCHAR(20) UNIQUE NOT NULL,
+                    nom VARCHAR(100) NOT NULL,
+                    prenom VARCHAR(100) NOT NULL,
+                    date_naissance DATE NOT NULL,
+                    lieu_naissance VARCHAR(255) NOT NULL,
+                    url_recto TEXT NOT NULL,
+                    url_verso TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            ";
+        }
+        $pdo->exec($sql);
     }
 
     private function createJournalTable(PDO $pdo): void
     {
-        $pdo->exec("
-            CREATE TABLE IF NOT EXISTS journal (
-                id SERIAL PRIMARY KEY,
-                nci_recherche VARCHAR(20) NOT NULL,
-                ip VARCHAR(45) NOT NULL,
-                localisation VARCHAR(255),
-                statut VARCHAR(20) NOT NULL CHECK (statut IN ('success', 'error')),
-                message TEXT,
-                date_recherche TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        ");
+        if ($this->driver === 'pgsql') {
+            $sql = "
+                CREATE TABLE IF NOT EXISTS journal (
+                    id SERIAL PRIMARY KEY,
+                    nci_recherche VARCHAR(20) NOT NULL,
+                    ip VARCHAR(45) NOT NULL,
+                    localisation VARCHAR(255),
+                    statut VARCHAR(20) NOT NULL CHECK (statut IN ('success', 'error')),
+                    message TEXT,
+                    date_recherche TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            ";
+        } else { // mysql
+            $sql = "
+                CREATE TABLE IF NOT EXISTS journal (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    nci_recherche VARCHAR(20) NOT NULL,
+                    ip VARCHAR(45) NOT NULL,
+                    localisation VARCHAR(255),
+                    statut ENUM('success', 'error') NOT NULL,
+                    message TEXT,
+                    date_recherche TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            ";
+        }
+        $pdo->exec($sql);
     }
 }
 

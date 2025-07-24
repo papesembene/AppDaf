@@ -4,8 +4,8 @@ namespace App\Core;
 use PDO;
 use PDOException;
 use Dotenv\Dotenv;
-use App\Src\Enums\SuccessEnum;
-use App\Src\Enums\ErrorEnum;
+use App\Translate\Fr\ErrorEnum;
+use App\Translate\Fr\SuccessEnum;
 
 class DataBase
 {
