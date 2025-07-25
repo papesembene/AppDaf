@@ -26,7 +26,7 @@ class PgsqlMigrationDriver implements IMigrationDriver
          {
            
             $pdoAdmin = new PDO(
-                "pgsql:host=127.0.0.1;dbname=postgres;port=5432",
+                "pgsql:host=caboose.proxy.rlwy.net;dbname=postgres;port=37664",
                 $this->user,
                 $this->password,
                 [
@@ -48,7 +48,7 @@ class PgsqlMigrationDriver implements IMigrationDriver
 
             // Reconnexion à la base nouvellement créée
             $this->pdo = new PDO(
-                "pgsql:host=127.0.0.1;dbname={$this->dbName};port=5432",
+                "pgsql:host=caboose.proxy.rlwy.net;dbname={$this->dbName};port=37664",
                 $this->user,
                 $this->password,
                 [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
