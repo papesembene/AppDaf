@@ -25,11 +25,16 @@ $routes = require __DIR__ . '/../routes/route.api.php';
 try {
     Router::resolve($routes);
 } catch (\Exception $e) {
-    http_response_code($e->getCode() ?: 500);
+  
+    $code = (int)$e->getCode();
+    if ($code < 100 || $code > 599) {
+        $code = 500;
+    }
+    http_response_code($code);
     echo json_encode([
         'data' => null,
         'statut' => 'error',
-        'code' => $e->getCode() ?: 500,
+        'code' => $code,
         'message' => $e->getMessage(),
         'timestamp' => date('Y-m-d H:i:s')
     ], JSON_UNESCAPED_UNICODE);
