@@ -113,6 +113,23 @@ class DataBase
         if (self::$pdo === null) 
         {
             try {
+                // 1. Cas Render (DATABASE_URL)
+                $databaseUrl = getenv('DATABASE_URL') ?: ($_ENV['DATABASE_URL'] ?? null);
+                if ($databaseUrl) {
+                    $parts = parse_url($databaseUrl);
+                    $driver = 'pgsql'; // Render fournit du PostgreSQL
+                    $host = $parts['host'];
+                    $port = $parts['port'];
+                    $user = $parts['user'];
+                    $pass = $parts['pass'];
+                    $dbname = ltrim($parts['path'], '/');
+                    $dsn = "$driver:host=$host;port=$port;dbname=$dbname";
+                    self::$pdo = new PDO($dsn, $user, $pass);
+                    self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    return self::$pdo;
+                }
+
+                // 2. Cas local (variables d'environnement classiques)
                 $driver = $_ENV['DB_DRIVER'];
                 if ($driver === 'pgsql') {
                     $host = $_ENV['DB_HOST_POSTGRES'];
