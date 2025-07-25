@@ -4,7 +4,8 @@ services:
     env: docker
     plan: free
     buildCommand: ""
-    startCommand: ""
+    startCommand: |
+      php bin/migrate && php bin/seed && php-fpm
     envVars:
       - key: DATABASE_URL
         fromDatabase:
