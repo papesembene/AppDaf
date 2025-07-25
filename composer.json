@@ -9,8 +9,8 @@
             "App\\Repositories\\": "src/Repositories/",
             "App\\Controllers\\": "src/Controllers/",
             "App\\Src\\Enums\\": "src/enums/",
-            "App\\Migrations\\": "app/Migrations/",
-            "App\\Seeders\\": "app/seeders/",
+            "App\\Migrations\\": "migrations",
+            "App\\Seeders\\": "seeders",
             "App\\Core\\": "app/Core/"
         }
     },
