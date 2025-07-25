@@ -114,11 +114,18 @@ class DataBase
         {
             try {
                 $driver = $_ENV['DB_DRIVER'];
-                $host = $_ENV['DB_HOST'];
-                $port = $_ENV['DB_PORT'];
+                if ($driver === 'pgsql') {
+                    $host = $_ENV['DB_HOST_POSTGRES'];
+                    $port = $_ENV['DB_PORT_POSTGRES'];
+                    $user = $_ENV['DB_USER_POSTGRES'];
+                    $pass = $_ENV['DB_PASS_POSTGRES'];
+                } elseif ($driver === 'mysql') {
+                    $host = $_ENV['DB_HOST_MYSQL'];
+                    $port = $_ENV['DB_PORT_MYSQL'];
+                    $user = $_ENV['DB_USER_MYSQL'];
+                    $pass = $_ENV['DB_PASS_MYSQL'];
+                }
                 $dbname = $_ENV['DB_NAME'];
-                $user = $_ENV['DB_USER'];
-                $pass = $_ENV['DB_PASS'];
                 $dsn = "{$driver}:host={$host};port={$port};dbname={$dbname}";
                 self::$pdo = new PDO($dsn, $user, $pass);
                 self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

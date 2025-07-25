@@ -8,7 +8,6 @@ use PDOException;
 class Migration
 {
     private IMigrationDriver $driver;
-    
 
     public function __construct(IMigrationDriver $driver)
     {
@@ -20,12 +19,9 @@ class Migration
      *
      * @throws Exception Si une erreur survient lors de la création de la base ou des tables.
      */
-    public function run(): void
+    public function run(string $sqlFile): void
     {
         $this->driver->createDatabase();
-        $this->driver->createTables();
-      
+        $this->driver->createTables($sqlFile);
     }
-
-
 }

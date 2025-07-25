@@ -58,18 +58,9 @@ class PgsqlMigrationDriver implements IMigrationDriver
         }
     }
 
-    public function createTables(): void
+    public function createTables(string $sqlFile): void
     {
-        // Vérifier si la table existe déjà
-        $stmt = $this->pdo->prepare("SELECT to_regclass('public.citoyens') AS table_name");
-        $stmt->execute();
-        $result = $stmt->fetch();
-        if (!empty($result['table_name'])) {
-            echo "ℹ Les tables existent déjà. Aucune création nécessaire.\n";
-            return;
-        }
-
-        $sql = file_get_contents(__DIR__ . '/../databases/script_create_pgsql.sql');
+        $sql = file_get_contents($sqlFile);
         if ($this->pdo->exec($sql) === false) {
             throw new Exception("Échec lors de l'exécution du script SQL PostgreSQL.");
         }

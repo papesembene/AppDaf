@@ -16,7 +16,7 @@ class CitoyensService extends Singleton implements ICitoyensService
 
     public function getCitoyenByNumCni(string $numcni): ?CitoyensEntity
     {
-        return $this->citoyensRepository->selectBynum($numcni);
+        return $this->IcitoyensRepository->selectBynum($numcni);
     }
 
 

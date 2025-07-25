@@ -4,15 +4,17 @@ namespace App\Controllers;
 use App\Core\Abstract\AbstractController;
 use App\Services\CitoyensService;
 use App\Entities\CitoyensEntity;
+use App\Services\ICitoyensService;
 class CitoyensController extends AbstractController
 {
     private ICitoyensService $IcitoyensService;
     private CitoyensEntity $citoyens;
   
-    public function __construct(ICitoyensService $IcitoyensService)
+    public function __construct(ICitoyensService $IcitoyensService, CitoyensEntity $citoyens)
     {
       
         $this->IcitoyensService = $IcitoyensService;
+        $this->citoyens = $citoyens;
     }
    
 
@@ -41,7 +43,7 @@ class CitoyensController extends AbstractController
             ], 400);
         }
 
-        $citoyen = $this->citoyensService->getCitoyenByNumCni($nci);
+        $citoyen = $this->IcitoyensService->getCitoyenByNumCni($nci);
 
         $statut = $citoyen ? 'success' : 'error';
         $this->logRequest('GET', "/citoyens/{$nci}", $statut);

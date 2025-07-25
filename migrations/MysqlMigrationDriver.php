@@ -23,20 +23,12 @@ class MysqlMigrationDriver implements ImigrationDriver
         echo "Base MySQL '{$this->dbName}' prête.\n";
     }
 
-    public function createTables(): void
+    public function createTables(string $sqlFile): void
     {
-        // Vérifier si la table existe déjà
-        $stmt = $this->pdo->prepare("SHOW TABLES LIKE 'citoyens'");
-        $stmt->execute();
-        if ($stmt->rowCount() > 0) {
-            echo "ℹ Les tables existent déjà. Aucune création nécessaire.\n";
-            return;
-        }
-
-        $sql = file_get_contents(__DIR__ . '/../databases/script_create_mysql.sql');
+        $sql = file_get_contents($sqlFile);
         if ($this->pdo->exec($sql) === false) {
             throw new Exception("Échec lors de l'exécution du script SQL MySQL.");
         }
-        echo "Tables MySQL créées avec succès.\n";
+        echo "Tables MySQL créées (ou déjà existantes) avec succès.\n";
     }
 }
