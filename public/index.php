@@ -3,8 +3,21 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../App/config/bootstrap.php';
 use Dotenv\Dotenv;
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+
+$dotenvPath = realpath(__DIR__ . '/..');
+if (!$dotenvPath) {
+    die('Impossible de résoudre le chemin racine de l\'application');
+}
+$dotenv = Dotenv::createUnsafeImmutable($dotenvPath);
+try {
+    $dotenv->load();
+} catch (\Dotenv\Exception\InvalidPathException $e) {
+    // En production, utilisez les variables d'environnement du système
+    if (getenv('APP_ENV') !== 'production') {
+        throw $e;
+    }
+}
+
 use App\Router\Router;
 
 header('Content-Type: application/json');

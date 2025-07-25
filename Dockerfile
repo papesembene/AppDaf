@@ -18,6 +18,9 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
+# Ensure .env file exists
+COPY .env.example .env
+
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
