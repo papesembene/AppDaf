@@ -4,7 +4,7 @@ namespace App\Core\abstract;
 
 use App\Core\Database;
 use PDO;
-abstract class AbstractRepository{
+abstract class AbstractRepository extends Singleton{
 
     protected PDO $pdo;
 

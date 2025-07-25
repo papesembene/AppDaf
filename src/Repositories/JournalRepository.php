@@ -3,30 +3,23 @@ namespace App\Repositories;
 use App\Core\abstract;
 use App\Entities;
 
-class JournalRepository extends AbstractRepository {
+class JournalRepository extends AbstractRepository implements iJournalRepository{
 
     private string $table='journal';
     private static ?JournalRepository $instance = null ;
-    public static function getInstance(): JournalRepository
-    {
-        if (is_null(self::$instance)) {
-            self::$instance = new JournalRepository();
-        }
-        return self::$instance;
-    }
+    
     
     private function __construct()
     {
         parent::construct();
-    }
-
     
+    }
 
     public function insertJournal(JournalEntity $journal): int
     {
         try{
         $query = "Insert INTO $this->table (nci_recherche, ip, localisation,  statut, date_recherche) 
-                     VALUES  (:nci_recherche, :ip, :localisation, :statut, :date_recherche)";    
+        VALUES  (:nci_recherche, :ip, :localisation, :statut, :date_recherche)";    
         $statement = $this->pdo->prepare($query);
          $statement->execute([
             'nci_recherche' => $journal->getNci_recherche(),
@@ -36,7 +29,7 @@ class JournalRepository extends AbstractRepository {
            
         ]);
         return $this->pdo->lastInsertId();
-        
+
         } catch (\PDOException $e) {
             throw new \Exception("Erreur lors de l'insertion du journal: " . $e->getMessage());
         }
