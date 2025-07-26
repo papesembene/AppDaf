@@ -3,7 +3,7 @@
 namespace App\Migrations;
 
 
-interface  IMigrationDriver
+interface IMigrationDriver
 {
     public function createDatabase(): void;
     public function createTables(string $sqlFile): void;

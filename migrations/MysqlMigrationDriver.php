@@ -5,7 +5,8 @@ namespace App\Migrations;
 use PDO;
 use Exception;
 
-class MysqlMigrationDriver implements ImigrationDriver
+
+class MysqlMigrationDriver implements IMigrationDriver
 {
     private PDO $pdo;
     private string $dbName;

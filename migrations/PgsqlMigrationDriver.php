@@ -6,6 +6,7 @@ use PDOException;
 use Exception;
 
 class PgsqlMigrationDriver implements IMigrationDriver
+
 {
     private PDO $pdo;
     private string $dbName;
@@ -24,9 +25,9 @@ class PgsqlMigrationDriver implements IMigrationDriver
     {
         try
          {
-           
+            // Utilise les paramètres du constructeur pour la connexion admin
             $pdoAdmin = new PDO(
-                "pgsql:host=caboose.proxy.rlwy.net;dbname=postgres;port=37664",
+                "pgsql:host={$_ENV['DB_HOST_POSTGRES']};port={$_ENV['DB_PORT_POSTGRES']};dbname=postgres",
                 $this->user,
                 $this->password,
                 [
@@ -35,7 +36,6 @@ class PgsqlMigrationDriver implements IMigrationDriver
                 ]
             );
 
-           
             $stmt = $pdoAdmin->prepare("SELECT 1 FROM pg_database WHERE datname = :db_name");
             $stmt->execute([':db_name' => $this->dbName]);
 
@@ -48,7 +48,7 @@ class PgsqlMigrationDriver implements IMigrationDriver
 
             // Reconnexion à la base nouvellement créée
             $this->pdo = new PDO(
-                "pgsql:host=caboose.proxy.rlwy.net;dbname={$this->dbName};port=37664",
+                "pgsql:host={$_ENV['DB_HOST_POSTGRES']};port={$_ENV['DB_PORT_POSTGRES']};dbname={$this->dbName}",
                 $this->user,
                 $this->password,
                 [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]

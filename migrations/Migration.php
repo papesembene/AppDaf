@@ -24,4 +24,6 @@ class Migration
         $this->driver->createDatabase();
         $this->driver->createTables($sqlFile);
     }
+
+    
 }

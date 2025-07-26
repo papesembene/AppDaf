@@ -16,7 +16,9 @@ if (DB_DRIVER === 'mysql') {
     $driver = new MysqlMigrationDriver($pdo, DB_NAME);
     $sqlFile = __DIR__ . '/../databases/script_create_mysql.sql';
 } elseif (DB_DRIVER === 'pgsql') {
-    $pdo = new PDO(BASE_DSN_POSTGRES, DB_USER_POSTGRES, DB_PASS_POSTGRES);
+    // Connexion à la base système "postgres" pour pouvoir créer la base "daf"
+    $dsnAdmin = "pgsql:host={$_ENV['DB_HOST_POSTGRES']};port={$_ENV['DB_PORT_POSTGRES']};dbname=postgres";
+    $pdo = new PDO($dsnAdmin, DB_USER_POSTGRES, DB_PASS_POSTGRES);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $driver = new PgsqlMigrationDriver($pdo, DB_NAME, DB_USER_POSTGRES, DB_PASS_POSTGRES);
     $sqlFile = __DIR__ . '/../databases/script_create_pgsql.sql';
